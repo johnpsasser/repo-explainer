@@ -384,10 +384,9 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
             print(f"   ⏳ Waiting for VEO to generate clip (this may take 1-3 minutes)...")
 
             # Poll for completion
-            op_name = operation.name if hasattr(operation, 'name') else operation
             while not operation.done:
-                await asyncio.sleep(5)
-                operation = self.gemini_client.operations.get(op_name)
+                await asyncio.sleep(10)
+                operation = self.gemini_client.operations.get(operation)
                 if hasattr(operation, 'metadata') and hasattr(operation.metadata, 'progress_percentage'):
                     progress = operation.metadata.progress_percentage
                     print(f"   Progress: {progress}%", end='\r')
