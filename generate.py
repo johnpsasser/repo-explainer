@@ -64,7 +64,7 @@ import aiohttp
 from google import genai
 from google.genai import types
 from elevenlabs import ElevenLabs, Voice
-from moviepy.editor import VideoFileClip, AudioFileClip, CompositeAudioClip, concatenate_videoclips
+from moviepy import VideoFileClip, AudioFileClip, CompositeAudioClip, concatenate_videoclips
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -478,7 +478,7 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
 
         # Create a silent audio file as placeholder
         # In production, replace this with actual music
-        from moviepy.audio.AudioClip import AudioClip
+        from moviepy import AudioClip
         import numpy as np
 
         def make_frame(t):
