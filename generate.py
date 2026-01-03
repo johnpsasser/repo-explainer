@@ -261,41 +261,41 @@ Be concise and focus on what would make a compelling 30-second explainer video."
         """Generate a 5-scene video script using Gemini."""
         print("\n📝 Generating video script...")
 
-        script_prompt = f"""Create a compelling 30-second explainer video script for this software project.
+        script_prompt = f"""Create a compelling 40-second explainer video script for this software project.
 
 Project Analysis:
 {json.dumps(analysis, indent=2)}
 
-Create a 5-scene script (6 seconds each) with cinematic visual descriptions:
+Create a 5-scene script (8 seconds each) with cinematic visual descriptions:
 
-Scene 1 (HOOK - 6 seconds):
+Scene 1 (HOOK - 8 seconds):
 - Visually striking intro
 - Show the project name and tagline
 - Modern tech aesthetic with gradients and animations
 
-Scene 2 (PROBLEM - 6 seconds):
+Scene 2 (PROBLEM - 8 seconds):
 - Visualize the problem this solves
 - Use metaphors and relatable scenarios
 - Dynamic infographic style
 
-Scene 3 (SOLUTION - 6 seconds):
+Scene 3 (SOLUTION - 8 seconds):
 - Show how it works (architecture visualization)
 - Animated diagrams showing data flow
 - Clean, technical but accessible
 
-Scene 4 (KEY FEATURES - 6 seconds):
+Scene 4 (KEY FEATURES - 8 seconds):
 - Highlight 2-3 standout features
 - Each feature gets a visual moment
 - Smooth transitions between features
 
-Scene 5 (GET STARTED - 6 seconds):
+Scene 5 (GET STARTED - 8 seconds):
 - Quick installation/getting started visual
 - Call to action
 - Project logo/name with link/GitHub stars
 
 For each scene provide:
 1. Visual description (detailed for VEO prompting - include camera movements, lighting, colors, objects)
-2. Voiceover narration text (natural, conversational, ~15-20 words)
+2. Voiceover narration text (natural, conversational, ~20-25 words for 8-second scenes)
 3. Audio cues (ambient sounds, effects that VEO should generate)
 
 Return as JSON:
@@ -304,7 +304,7 @@ Return as JSON:
         {{
             "number": 1,
             "title": "Scene title",
-            "duration": 6,
+            "duration": 8,
             "visual_prompt": "Extremely detailed VEO prompt with cinematic details...",
             "voiceover_text": "What the narrator says...",
             "audio_cues": "background sounds, effects..."
@@ -357,9 +357,9 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
         try:
             # Generate video with VEO
             config = types.GenerateVideosConfig(
-                duration_sec=6,
                 aspect_ratio="16:9",
                 resolution=self.video_quality,
+                duration_seconds=8,
             )
 
             # Use scene extension if we have a previous video
@@ -384,9 +384,10 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
             print(f"   ⏳ Waiting for VEO to generate clip (this may take 1-3 minutes)...")
 
             # Poll for completion
+            op_name = operation.name if hasattr(operation, 'name') else operation
             while not operation.done:
                 await asyncio.sleep(5)
-                operation = self.gemini_client.operations.get(operation.name)
+                operation = self.gemini_client.operations.get(op_name)
                 if hasattr(operation, 'metadata') and hasattr(operation.metadata, 'progress_percentage'):
                     progress = operation.metadata.progress_percentage
                     print(f"   Progress: {progress}%", end='\r')
@@ -484,12 +485,12 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
         def make_frame(t):
             return np.array([0, 0])  # Stereo silence
 
-        duration = 30  # 30 seconds
+        duration = 40  # 40 seconds (5 scenes × 8 seconds)
         audio_clip = AudioClip(make_frame, duration=duration, fps=44100)
         audio_clip.write_audiofile(str(music_path), fps=44100, verbose=False, logger=None)
 
         print("⚠️  Using silent placeholder - add your own lo-fi music at:", music_path)
-        print("   Tip: Replace this file with a 30-second lo-fi/trip hop track")
+        print("   Tip: Replace this file with a 40-second lo-fi/trip hop track")
 
         return str(music_path)
 
@@ -660,7 +661,7 @@ def main():
 
         print(f"\n{'='*80}")
         print("\n✅ Preview complete! To generate the actual video, run without --preview flag")
-        print(f"💰 Estimated cost: ~$4.50-5.00 (VEO: $4.50, Gemini: $0.05, ElevenLabs: free tier)")
+        print(f"💰 Estimated cost: ~$6.00-6.05 (VEO: $6.00, Gemini: $0.05, ElevenLabs: free tier)")
         return
 
     # Full generation mode
