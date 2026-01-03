@@ -414,11 +414,17 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
     async def generate_all_video_clips(self, script: Dict) -> List[str]:
         """Generate all video clips with scene extension (sequential for proper chaining)."""
         print("\n🎬 Generating all video clips with scene extension...")
+        print("⏱️  Note: VEO has a 2 req/min rate limit - adding 35s delay between scenes")
 
         clip_paths = []
         previous_clip = None
 
         for i, scene in enumerate(script['scenes'], 1):
+            # Add throttling delay between requests (except for first request)
+            if i > 1:
+                print(f"\n⏳ Waiting 35 seconds to respect VEO rate limit (2 req/min)...")
+                await asyncio.sleep(35)
+
             clip_path = await self.generate_video_clip(scene, i, previous_clip)
             if clip_path:
                 clip_paths.append(clip_path)
