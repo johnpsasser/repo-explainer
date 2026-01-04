@@ -362,24 +362,24 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
                 duration_seconds=8,
             )
 
-            # Use scene extension if we have a previous video
-            if previous_video_path and os.path.exists(previous_video_path):
-                print(f"   Using scene extension from previous clip...")
-                # Upload previous video for scene extension
-                previous_file = self.gemini_client.files.upload(file=previous_video_path)
+            # TODO: Scene extension temporarily disabled due to encoding parameter issue
+            # Will re-enable once Gemini API supports it properly
+            # if previous_video_path and os.path.exists(previous_video_path):
+            #     print(f"   Using scene extension from previous clip...")
+            #     previous_file = self.gemini_client.files.upload(file=previous_video_path)
+            #     operation = self.gemini_client.models.generate_videos(
+            #         model=self.veo_model,
+            #         prompt=veo_prompt,
+            #         video=previous_file,
+            #         config=config
+            #     )
+            # else:
 
-                operation = self.gemini_client.models.generate_videos(
-                    model=self.veo_model,
-                    prompt=veo_prompt,
-                    video=previous_file,
-                    config=config
-                )
-            else:
-                operation = self.gemini_client.models.generate_videos(
-                    model=self.veo_model,
-                    prompt=veo_prompt,
-                    config=config
-                )
+            operation = self.gemini_client.models.generate_videos(
+                model=self.veo_model,
+                prompt=veo_prompt,
+                config=config
+            )
 
             print(f"   ⏳ Waiting for VEO to generate clip (this may take 1-3 minutes)...")
 
@@ -547,7 +547,7 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
             try:
                 music = AudioFileClip(music_path)
                 # Reduce music volume to 30% so voiceover is clear
-                music = music.volumex(0.3)
+                music = music.with_volume_scaled(0.3)
                 audio_tracks.append(music)
                 print("   ✓ Added background music (30% volume)")
             except Exception as e:
@@ -556,7 +556,7 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
         # Composite audio
         if audio_tracks:
             final_audio = CompositeAudioClip(audio_tracks)
-            final_video = final_video.set_audio(final_audio)
+            final_video = final_video.with_audio(final_audio)
             print("   ✓ Audio tracks mixed")
 
         # Write final video
