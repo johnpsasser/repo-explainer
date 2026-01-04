@@ -399,7 +399,12 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
 
             if hasattr(result, 'generated_videos') and result.generated_videos:
                 video = result.generated_videos[0]
-                video.video.save(str(clip_path))
+
+                # Download video file and save
+                video_data = self.gemini_client.files.download(file=video.video)
+                with open(clip_path, 'wb') as f:
+                    f.write(video_data)
+
                 print(f"   ✅ Scene {scene_number} generated: {clip_path}")
                 return str(clip_path)
             else:
