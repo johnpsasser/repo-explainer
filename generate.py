@@ -365,13 +365,13 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
             # Use scene extension if we have a previous video
             if previous_video_path and os.path.exists(previous_video_path):
                 print(f"   Using scene extension from previous clip...")
-                with open(previous_video_path, 'rb') as f:
-                    previous_video = f.read()
+                # Upload previous video for scene extension
+                previous_file = self.gemini_client.files.upload(file=previous_video_path)
 
                 operation = self.gemini_client.models.generate_videos(
                     model=self.veo_model,
                     prompt=veo_prompt,
-                    video=previous_video,
+                    video=previous_file,
                     config=config
                 )
             else:
@@ -450,10 +450,10 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
 
         try:
             # Generate speech using ElevenLabs
-            audio = self.elevenlabs_client.generate(
+            audio = self.elevenlabs_client.text_to_speech.convert(
                 text=full_script,
-                voice="Adam",  # Professional male voice, can be customized
-                model="eleven_multilingual_v2"
+                voice_id="pNInz6obpgDQGcFmaJgB",  # Adam voice ID
+                model_id="eleven_multilingual_v2"
             )
 
             # Save audio
@@ -497,7 +497,7 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
 
         duration = 40  # 40 seconds (5 scenes × 8 seconds)
         audio_clip = AudioClip(make_frame, duration=duration, fps=44100)
-        audio_clip.write_audiofile(str(music_path), fps=44100, verbose=False, logger=None)
+        audio_clip.write_audiofile(str(music_path), fps=44100, logger=None)
 
         print("⚠️  Using silent placeholder - add your own lo-fi music at:", music_path)
         print("   Tip: Replace this file with a 40-second lo-fi/trip hop track")
