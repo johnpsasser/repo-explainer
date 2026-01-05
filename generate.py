@@ -487,22 +487,12 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
 
         music_path = self.cache_dir / "background_music.mp3"
 
-        # Create a silent audio file as placeholder
-        # In production, replace this with actual music
-        from moviepy import AudioClip
-        import numpy as np
+        # Skip background music generation for now
+        # TODO: Add proper music generation or allow user to provide music file
+        print("⚠️  Skipping background music - add your own 40-second lo-fi track later")
+        print("   Tip: You can add music manually by editing the final video")
 
-        def make_frame(t):
-            return np.array([0, 0])  # Stereo silence
-
-        duration = 40  # 40 seconds (5 scenes × 8 seconds)
-        audio_clip = AudioClip(make_frame, duration=duration, fps=44100)
-        audio_clip.write_audiofile(str(music_path), fps=44100, logger=None)
-
-        print("⚠️  Using silent placeholder - add your own lo-fi music at:", music_path)
-        print("   Tip: Replace this file with a 40-second lo-fi/trip hop track")
-
-        return str(music_path)
+        return None
 
     def compose_final_video(
         self,
