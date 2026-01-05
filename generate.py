@@ -567,7 +567,6 @@ Make the visual prompts EXTREMELY detailed for best VEO results - include specif
             audio_codec='aac',
             fps=24,
             preset='medium',
-            verbose=False,
             logger=None
         )
 
